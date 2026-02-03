@@ -44,12 +44,14 @@ fun PlayScreen(viewModel: PlayViewModel = koinViewModel()) {
             }
     ) {
         touches.forEach { (id, touchPoint) ->
-            val isSelected = selectedPlayerId == id
-            TouchIndicator(
-                position = touchPoint.position,
-                color = touchPoint.color,
-                isSelected = isSelected
-            )
+            key(id) {
+                val isSelected = selectedPlayerId == id
+                TouchIndicator(
+                    position = touchPoint.position,
+                    color = touchPoint.color,
+                    isSelected = isSelected
+                )
+            }
         }
 
         if (countdown != null && countdown!! > 0) {
@@ -66,8 +68,17 @@ fun PlayScreen(viewModel: PlayViewModel = koinViewModel()) {
 
 @Composable
 fun TouchIndicator(position: Offset, color: Color, isSelected: Boolean) {
+    val entryScale = remember { Animatable(0f) }
+    
+    LaunchedEffect(Unit) {
+        entryScale.animateTo(
+            targetValue = 1f,
+            animationSpec = tween(durationMillis = 2000, easing = LinearOutSlowInEasing)
+        )
+    }
+
     val infiniteTransition = rememberInfiniteTransition()
-    val radiusScale by if (isSelected) {
+    val selectionScale by if (isSelected) {
         infiniteTransition.animateFloat(
             initialValue = 1f,
             targetValue = 1.3f,
@@ -82,7 +93,7 @@ fun TouchIndicator(position: Offset, color: Color, isSelected: Boolean) {
 
     Canvas(modifier = Modifier.fillMaxSize()) {
         val baseRadius = 120f
-        val animatedRadius = baseRadius * radiusScale
+        val animatedRadius = baseRadius * entryScale.value * selectionScale
         
         drawCircle(
             color = color,
