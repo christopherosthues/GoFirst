@@ -89,7 +89,6 @@ fun TouchIndicator(position: Offset, color: Color, isSelected: Boolean, isHighli
             )
         )
     } else if (isHighlighted) {
-        // Smaller scale for the shuffle phase
         remember { mutableStateOf(1.1f) }
     } else {
         remember { mutableStateOf(1f) }

@@ -43,7 +43,7 @@ class PlayViewModel : ViewModel() {
     )
 
     fun onTouchDown(id: Long, position: Offset) {
-        if (_selectedPlayerId.value != null || selectionJob != null) {
+        if (_selectedPlayerId.value != null) {
             reset()
         }
         if (!_touches.containsKey(id)) {
