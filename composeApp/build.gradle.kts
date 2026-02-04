@@ -111,7 +111,7 @@ compose.desktop {
 
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "org.darchacheron.gofirst"
+            packageName = "GoFirst"
             packageVersion = appVersionName
         }
     }
