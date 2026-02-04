@@ -20,6 +20,7 @@ import org.koin.compose.viewmodel.koinViewModel
 fun PlayScreen(viewModel: PlayViewModel = koinViewModel()) {
     val touches = viewModel.touches
     val countdown by viewModel.countdown
+    val highlightedPlayerId by viewModel.highlightedPlayerId
     val selectedPlayerId by viewModel.selectedPlayerId
 
     Box(
@@ -45,11 +46,11 @@ fun PlayScreen(viewModel: PlayViewModel = koinViewModel()) {
     ) {
         touches.forEach { (id, touchPoint) ->
             key(id) {
-                val isSelected = selectedPlayerId == id
                 TouchIndicator(
                     position = touchPoint.position,
                     color = touchPoint.color,
-                    isSelected = isSelected
+                    isSelected = selectedPlayerId == id,
+                    isHighlighted = highlightedPlayerId == id
                 )
             }
         }
@@ -67,7 +68,7 @@ fun PlayScreen(viewModel: PlayViewModel = koinViewModel()) {
 }
 
 @Composable
-fun TouchIndicator(position: Offset, color: Color, isSelected: Boolean) {
+fun TouchIndicator(position: Offset, color: Color, isSelected: Boolean, isHighlighted: Boolean) {
     val entryScale = remember { Animatable(0f) }
     
     LaunchedEffect(Unit) {
@@ -87,6 +88,9 @@ fun TouchIndicator(position: Offset, color: Color, isSelected: Boolean) {
                 repeatMode = RepeatMode.Reverse
             )
         )
+    } else if (isHighlighted) {
+        // Smaller scale for the shuffle phase
+        remember { mutableStateOf(1.1f) }
     } else {
         remember { mutableStateOf(1f) }
     }
@@ -99,15 +103,15 @@ fun TouchIndicator(position: Offset, color: Color, isSelected: Boolean) {
             color = color,
             radius = animatedRadius,
             center = position,
-            alpha = if (isSelected) 1f else 0.6f
+            alpha = if (isSelected || isHighlighted) 1f else 0.6f
         )
         
-        if (isSelected) {
+        if (isSelected || isHighlighted) {
             drawCircle(
                 color = Color.White,
                 radius = animatedRadius + 15f,
                 center = position,
-                style = Stroke(width = 8f)
+                style = Stroke(width = if (isSelected) 8f else 4f)
             )
         }
     }

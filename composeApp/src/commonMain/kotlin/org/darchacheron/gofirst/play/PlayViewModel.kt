@@ -23,6 +23,9 @@ class PlayViewModel : ViewModel() {
     private val _countdown = mutableStateOf<Int?>(null)
     val countdown: State<Int?> = _countdown
 
+    private val _highlightedPlayerId = mutableStateOf<Long?>(null)
+    val highlightedPlayerId: State<Long?> = _highlightedPlayerId
+
     private val _selectedPlayerId = mutableStateOf<Long?>(null)
     val selectedPlayerId: State<Long?> = _selectedPlayerId
 
@@ -40,7 +43,7 @@ class PlayViewModel : ViewModel() {
     )
 
     fun onTouchDown(id: Long, position: Offset) {
-        if (_selectedPlayerId.value != null) {
+        if (_selectedPlayerId.value != null || selectionJob != null) {
             reset()
         }
         if (!_touches.containsKey(id)) {
@@ -59,7 +62,7 @@ class PlayViewModel : ViewModel() {
 
     fun onTouchUp(id: Long) {
         _touches.remove(id)
-        if (_touches.size < 2 && _selectedPlayerId.value == null) {
+        if (_touches.size < 2 && _selectedPlayerId.value == null && _countdown.value != null) {
             cancelSelection()
         }
     }
@@ -76,24 +79,41 @@ class PlayViewModel : ViewModel() {
                     }
                 }
                 _countdown.value = 0
-                selectWinner()
+                delay(200) // Small pause at 0
+                _countdown.value = null
+                animateSelection()
             }
         }
+    }
+
+    private suspend fun animateSelection() {
+        val keys = _touches.keys.toList()
+        if (keys.isEmpty()) return
+
+        // Shuffle animation: highlight players one after another
+        var delayMillis = 100L
+        repeat(15) {
+            _highlightedPlayerId.value = keys[Random.nextInt(keys.size)]
+            delay(delayMillis)
+            // Gradually slow down the animation
+            delayMillis += 20
+            if (_touches.size < 2) {
+                reset()
+                return
+            }
+        }
+
+        // Final selection
+        _selectedPlayerId.value = keys[Random.nextInt(keys.size)]
+        _highlightedPlayerId.value = null
+        selectionJob = null
     }
 
     private fun cancelSelection() {
         selectionJob?.cancel()
         selectionJob = null
         _countdown.value = null
-    }
-
-    private fun selectWinner() {
-        if (_touches.isNotEmpty()) {
-            val keys = _touches.keys.toList()
-            _selectedPlayerId.value = keys[Random.nextInt(keys.size)]
-        }
-        _countdown.value = null
-        selectionJob = null
+        _highlightedPlayerId.value = null
     }
 
     fun reset() {
