@@ -158,11 +158,6 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
-      - name: Install WiX (Windows only)
-        shell: powershell
-        run: |
-          choco install -y wixtoolset
-
       - name: Build MSI (Windows)
         shell: powershell
         run: |
