@@ -58,8 +58,7 @@ jobs:
       - name: Build project (compile & unit-build)
         run: |
           # Run the build but skip packaging and release APK creation so CI doesn't produce installers
-          ./gradlew --no-daemon --stacktrace build \
-            -x :composeApp:packageDmg -x :composeApp:packageMsi -x :composeApp:packageDeb -x :androidApp:assembleRelease
+          ./gradlew --no-daemon --stacktrace build
 
   common-tests:
     name: Common JVM tests
