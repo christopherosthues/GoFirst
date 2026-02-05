@@ -1,0 +1,132 @@
+# GitHub Actions Workflow: CI Build (no packaging or release)
+# - Builds on ubuntu, macos and windows runners using a matrix
+# - On push to refs/heads/** triggers builds on all branches
+# - On pull requests to main or develop, triggers builds for those branches
+# - No packaging or release creation; meant for fast CI checks
+
+name: CI Build
+
+on:
+  push:
+    branches: [ '**' ]
+  pull_request:
+    branches: [ main, develop ]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+env:
+  GRADLE_OPTS: "-Dorg.gradle.daemon=false"
+
+jobs:
+  build:
+    name: Build (matrix)
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ ubuntu-latest, macos-latest, windows-latest ]
+    outputs:
+      build_id: ${{ github.run_id }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: zulu
+          java-version: 25
+
+      - name: Cache Gradle
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Make gradlew executable
+        run: chmod +x gradlew || true
+
+      # Android SDK is preinstalled on ubuntu-latest (Android SDK 36.1 for this project)
+
+      - name: Build project (compile & unit-build)
+        run: |
+          # Run the build but skip packaging and release APK creation so CI doesn't produce installers
+          ./gradlew --no-daemon --stacktrace build \
+            -x :composeApp:packageDmg -x :composeApp:packageMsi -x :composeApp:packageDeb -x :androidApp:assembleRelease
+
+  common-tests:
+    name: Common JVM tests
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: zulu
+          java-version: 25
+
+      - name: Cache Gradle
+        uses: actions/cache@v5
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ubuntu-latest-gradle-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}
+          restore-keys: |
+            ubuntu-latest-gradle-
+
+      - name: Make gradlew executable
+        run: chmod +x gradlew || true
+
+      - name: Run common JVM tests (:composeApp:jvmTest)
+        run: |
+          ./gradlew --no-daemon --stacktrace :composeApp:jvmTest
+
+  android-tests:
+    name: Android unit tests
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: zulu
+          java-version: 25
+
+      - name: Cache Gradle
+        uses: actions/cache@v5
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ubuntu-latest-gradle-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}
+          restore-keys: |
+            ubuntu-latest-gradle-
+
+#      - name: Setup Android SDK
+#        uses: android-actions/setup-android@v3
+#        with:
+#          api-level: 36
+#          build-tools: '36.1.0'
+#          components: build-tools;36.1.0;platforms;android-36
+#          accept-libraries: true
+
+      - name: Make gradlew executable
+        run: chmod +x gradlew || true
+
+      # Android SDK is preinstalled on ubuntu-latest (Android SDK 36.1 for this project)
+
+      - name: Run Android unit tests (:androidApp:testDebugUnitTest)
+        run: |
+          ./gradlew --no-daemon --stacktrace :androidApp:testDebugUnitTest
