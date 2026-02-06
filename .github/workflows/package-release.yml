@@ -271,10 +271,6 @@ jobs:
           # Create a release directory under the downloaded artifacts
           mkdir -p release
 
-          # Ensure zip is available (ubuntu runners may not have it preinstalled)
-          apt-get update -y
-          apt-get install -y zip || true
-
           # Zip JS artifacts (if present)
           if [ -d artifacts/js-artifacts ]; then
             zip -r release/js.zip artifacts/js-artifacts/* || true
