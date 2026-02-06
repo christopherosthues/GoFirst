@@ -266,6 +266,28 @@ jobs:
         with:
           path: artifacts
 
+      - name: Prepare release assets
+        run: |
+          # Create a release directory under the downloaded artifacts
+          mkdir -p release
+
+          # Ensure zip is available (ubuntu runners may not have it preinstalled)
+          apt-get update -y
+          apt-get install -y zip || true
+
+          # Zip JS artifacts (if present)
+          if [ -d artifacts/js-artifacts ]; then
+            zip -r release/js.zip artifacts/js-artifacts/* || true
+          fi
+
+          # Zip WASM artifacts (if present)
+          if [ -d artifacts/wasm-artifacts ]; then
+            zip -r release/wasm.zip artifacts/wasm-artifacts/* || true
+          fi
+
+          # Move installer/artifact files (apk, msi, dmg, deb, zip) into the release dir
+          find artifacts -type f \( -iname '*.apk' -o -iname '*.msi' -o -iname '*.dmg' -o -iname '*.deb' -o -iname '*.zip' \) -exec mv -t release {} + || true
+
       # Setup Gradle
       -   name: Setup Gradle
           uses: gradle/actions/setup-gradle@v5
@@ -294,7 +316,7 @@ jobs:
           touch $RELEASE_NOTE
           ./gradlew getChangelog --unreleased --no-header --quiet --console=plain --output-file=$RELEASE_NOTE
           
-          gh release create $VERSION artifacts/* \
+          gh release create $VERSION release/* \
           --draft \
           --title $VERSION \
           --notes-file $RELEASE_NOTE
