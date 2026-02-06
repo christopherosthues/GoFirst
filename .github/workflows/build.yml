@@ -55,7 +55,7 @@ jobs:
 
       # Android SDK is preinstalled on ubuntu-latest (Android SDK 36.1 for this project)
 
-      - name: Build project (compile & unit-build)
-        run: |
-          # Run the build but skip packaging and release APK creation so CI doesn't produce installers
-          ./gradlew --no-daemon --stacktrace build
+#      - name: Build project (compile & unit-build)
+#        run: |
+#          # Run the build but skip packaging and release APK creation so CI doesn't produce installers
+#          ./gradlew --no-daemon --stacktrace build

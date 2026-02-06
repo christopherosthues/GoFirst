@@ -111,6 +111,7 @@ changelog {
     groups = listOf("Added", "Changed", "Removed", "Fixed")
     repositoryUrl = properties("appRepositoryUrl")
     version = properties("appVersionName")
+    path = rootProject.file("CHANGELOG.md").path
 }
 
 compose.desktop {
