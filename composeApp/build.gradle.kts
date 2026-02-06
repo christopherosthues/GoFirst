@@ -87,8 +87,6 @@ kotlin {
             implementation(libs.koin.compose.viewmodel.navigation)
             implementation(libs.androidx.navigation.compose)
             implementation(libs.kotlinx.serialization.json)
-
-            implementation(libs.kotlinx.dateime)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

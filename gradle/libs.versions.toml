@@ -53,9 +53,6 @@ androidx-navigation-compose = { module = "org.jetbrains.androidx.navigation:navi
 
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinSerialization" }
 
-kotlinx-dateime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "kotlinx-datetime" }
-
-
 [plugins]
 changelog = { id = "org.jetbrains.changelog", version.ref = "changelog" }
 androidApplication = { id = "com.android.application", version.ref = "agp" }
