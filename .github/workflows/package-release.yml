@@ -284,12 +284,6 @@ jobs:
           # Move installer/artifact files (apk, msi, dmg, deb, zip) into the release dir
           find artifacts -type f \( -iname '*.apk' -o -iname '*.msi' -o -iname '*.dmg' -o -iname '*.deb' -o -iname '*.zip' \) -exec mv -t release {} + || true
 
-      # Setup Gradle
-      -   name: Setup Gradle
-          uses: gradle/actions/setup-gradle@v5
-          with:
-            gradle-home-cache-cleanup: true
-
       # Remove old release drafts by using the curl request for the available releases with a draft flag
       - name: Remove Old Release Drafts
         env:
@@ -308,11 +302,24 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           VERSION=$(./gradlew properties --property appVersionName --quiet --console=plain | tail -n 1 | cut -f2- -d ' ')
-          RELEASE_NOTE="release_note.txt"
-          touch $RELEASE_NOTE
-          ./gradlew getChangelog --unreleased --no-header --quiet --console=plain --output-file=$RELEASE_NOTE
-          
+          # Requested output file name for getChangelog
+          REQUESTED_RELEASE_NOTE="release_note.txt"
+
+          # Generate the changelog to the requested path (the task may place the file in a subdirectory)
+          ./gradlew getChangelog --unreleased --no-header --quiet --console=plain --output-file=$REQUESTED_RELEASE_NOTE
+
+          # Find the actual file path (it might be in a generated subdirectory). Prefer the first match.
+          FOUND_NOTE=$(find . -type f -name "$REQUESTED_RELEASE_NOTE" -print -quit || true)
+          if [ -z "$FOUND_NOTE" ]; then
+            echo "WARNING: release note file '$REQUESTED_RELEASE_NOTE' not found; falling back to requested name"
+            RELEASE_NOTE="$REQUESTED_RELEASE_NOTE"
+          else
+            # Use the discovered path (strip leading ./ if present)
+            RELEASE_NOTE="${FOUND_NOTE#./}"
+            echo "Using release notes file: $RELEASE_NOTE"
+          fi
+
           gh release create $VERSION release/* \
-          --draft \
-          --title $VERSION \
-          --notes-file $RELEASE_NOTE
+            --draft \
+            --title $VERSION \
+            --notes-file "$RELEASE_NOTE"
