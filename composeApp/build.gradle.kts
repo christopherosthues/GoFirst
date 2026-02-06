@@ -110,6 +110,7 @@ dependencies {
 changelog {
     groups = listOf("Added", "Changed", "Removed", "Fixed")
     repositoryUrl = properties("appRepositoryUrl")
+    version = properties("appVersionName")
 }
 
 compose.desktop {
