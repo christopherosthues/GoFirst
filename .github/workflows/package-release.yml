@@ -46,7 +46,7 @@ jobs:
       - name: Build DEB (Ubuntu)
         run: |
           chmod +x gradlew || true
-          ./gradlew --no-daemon --stacktrace :composeApp:packageDeb
+          ./gradlew --no-daemon --stacktrace :composeApp:packageReleaseDeb
 
       - name: Upload Ubuntu artifacts
         uses: actions/upload-artifact@v6
@@ -94,6 +94,82 @@ jobs:
             androidApp/build/outputs/apk/release/*.apk
           retention-days: 14
 
+  package-js:
+    name: Package (JS) - ZIP
+    runs-on: ubuntu-latest
+    outputs:
+      artifacts-path: artifacts
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: zulu
+          java-version: 25
+
+      - name: Cache Gradle
+        uses: actions/cache@v5
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-js-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-js-
+
+      - name: Build JS
+        run: |
+          chmod +x gradlew || true
+          ./gradlew --no-daemon --stacktrace :composeApp:jsBrowserDistribution
+
+      - name: Upload JS artifacts
+        uses: actions/upload-artifact@v6
+        with:
+          name: js-artifacts
+          path: |
+            composeApp/build/dist/js/productionExecutable/**
+          retention-days: 14
+
+  package-js-wasm:
+    name: Package (WASM) - ZIP
+    runs-on: ubuntu-latest
+    outputs:
+      artifacts-path: artifacts
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: zulu
+          java-version: 25
+
+      - name: Cache Gradle
+        uses: actions/cache@v5
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-wasm-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-wasm-
+
+      - name: Build WASM
+        run: |
+          chmod +x gradlew || true
+          ./gradlew --no-daemon --stacktrace :composeApp:wasmJsBrowserDistribution
+
+      - name: Upload WASM artifacts
+        uses: actions/upload-artifact@v6
+        with:
+          name: wasm-artifacts
+          path: |
+            composeApp/build/dist/wasmJs/productionExecutable/**
+          retention-days: 14
+
   package-macos:
     name: Package (macOS) - DMG
     runs-on: macos-latest
@@ -122,7 +198,7 @@ jobs:
       - name: Build DMG (macOS)
         run: |
           chmod +x gradlew || true
-          ./gradlew --no-daemon --stacktrace :composeApp:packageDmg
+          ./gradlew --no-daemon --stacktrace :composeApp:packageReleaseDmg
 
       - name: Upload macOS artifacts
         uses: actions/upload-artifact@v6
@@ -160,7 +236,7 @@ jobs:
       - name: Build MSI (Windows)
         shell: powershell
         run: |
-          .\gradlew.bat --no-daemon --stacktrace :composeApp:packageMsi
+          .\gradlew.bat --no-daemon --stacktrace :composeApp:packageReleaseMsi
 
       - name: Upload Windows artifacts
         uses: actions/upload-artifact@v6
@@ -175,7 +251,7 @@ jobs:
   releaseDraft:
     name: Release draft
     if: ${{ startsWith(github.ref, 'refs/heads/release/') && github.event_name != 'pull_request' }}
-    needs: [ package-android, package-ubuntu, package-macos, package-windows ]
+    needs: [ package-android, package-js, package-js-wasm, package-ubuntu, package-macos, package-windows ]
     runs-on: ubuntu-latest
     permissions:
       contents: write
