@@ -266,6 +266,12 @@ jobs:
         with:
           path: artifacts
 
+      # Setup Gradle
+      -   name: Setup Gradle
+          uses: gradle/actions/setup-gradle@v5
+          with:
+            gradle-home-cache-cleanup: true
+
       # Remove old release drafts by using the curl request for the available releases with a draft flag
       - name: Remove Old Release Drafts
         env:
@@ -280,7 +286,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          VERSION=$(./gradlew properties --property version --quiet --console=plain | tail -n 1 | cut -f2- -d ' ')
+          VERSION=$(./gradlew properties --property appVersionName --quiet --console=plain | tail -n 1 | cut -f2- -d ' ')
           RELEASE_NOTE="./build/tmp/release_note.txt"
           chmod +x gradlew || true
           ./gradlew getChangelog --unreleased --no-header --quiet --console=plain --output-file=$RELEASE_NOTE
