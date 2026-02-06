@@ -31,7 +31,7 @@ jobs:
         uses: actions/setup-java@v5
         with:
           distribution: zulu
-          java-version: 21
+          java-version: 25
 
       - name: Cache Gradle
         uses: actions/cache@v5
@@ -46,7 +46,7 @@ jobs:
       - name: Build DEB (Ubuntu)
         run: |
           chmod +x gradlew || true
-          ./gradlew --no-daemon --stacktrace :composeApp:packageReleaseDeb
+          ./gradlew --no-daemon --stacktrace :composeApp:packageDeb
 
       - name: Upload Ubuntu artifacts
         uses: actions/upload-artifact@v6
@@ -183,7 +183,7 @@ jobs:
         uses: actions/setup-java@v5
         with:
           distribution: zulu
-          java-version: 21
+          java-version: 25
 
       - name: Cache Gradle
         uses: actions/cache@v5
@@ -198,7 +198,7 @@ jobs:
       - name: Build DMG (macOS)
         run: |
           chmod +x gradlew || true
-          ./gradlew --no-daemon --stacktrace :composeApp:packageReleaseDmg
+          ./gradlew --no-daemon --stacktrace :composeApp:packageDmg
 
       - name: Upload macOS artifacts
         uses: actions/upload-artifact@v6
@@ -221,7 +221,7 @@ jobs:
         uses: actions/setup-java@v5
         with:
           distribution: zulu
-          java-version: 21
+          java-version: 25
 
       - name: Cache Gradle
         uses: actions/cache@v5
@@ -236,7 +236,7 @@ jobs:
       - name: Build MSI (Windows)
         shell: powershell
         run: |
-          .\gradlew.bat --no-daemon --stacktrace :composeApp:packageReleaseMsi
+          .\gradlew.bat --no-daemon --stacktrace :composeApp:packageMsi
 
       - name: Upload Windows artifacts
         uses: actions/upload-artifact@v6
