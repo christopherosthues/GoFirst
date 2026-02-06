@@ -60,74 +60,64 @@ jobs:
           # Run the build but skip packaging and release APK creation so CI doesn't produce installers
           ./gradlew --no-daemon --stacktrace build
 
-  common-tests:
-    name: Common JVM tests
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-
-      - name: Setup Java
-        uses: actions/setup-java@v5
-        with:
-          distribution: zulu
-          java-version: 25
-
-      - name: Cache Gradle
-        uses: actions/cache@v5
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ubuntu-latest-gradle-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}
-          restore-keys: |
-            ubuntu-latest-gradle-
-
-      - name: Make gradlew executable
-        run: chmod +x gradlew || true
-
-      - name: Run common JVM tests (:composeApp:jvmTest)
-        run: |
-          ./gradlew --no-daemon --stacktrace :composeApp:jvmTest
-
-  android-tests:
-    name: Android unit tests
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-
-      - name: Setup Java
-        uses: actions/setup-java@v5
-        with:
-          distribution: zulu
-          java-version: 25
-
-      - name: Cache Gradle
-        uses: actions/cache@v5
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ubuntu-latest-gradle-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}
-          restore-keys: |
-            ubuntu-latest-gradle-
-
-#      - name: Setup Android SDK
-#        uses: android-actions/setup-android@v3
-#        with:
-#          api-level: 36
-#          build-tools: '36.1.0'
-#          components: build-tools;36.1.0;platforms;android-36
-#          accept-libraries: true
-
-      - name: Make gradlew executable
-        run: chmod +x gradlew || true
-
-      # Android SDK is preinstalled on ubuntu-latest (Android SDK 36.1 for this project)
-
-      - name: Run Android unit tests (:androidApp:testDebugUnitTest)
-        run: |
-          ./gradlew --no-daemon --stacktrace :androidApp:testDebugUnitTest
+  #  common-tests:
+  #    name: Common JVM tests
+  #    runs-on: ubuntu-latest
+  #    needs: build
+  #    steps:
+  #      - name: Checkout
+  #        uses: actions/checkout@v6
+  #
+  #      - name: Setup Java
+  #        uses: actions/setup-java@v5
+  #        with:
+  #          distribution: zulu
+  #          java-version: 25
+  #
+  #      - name: Cache Gradle
+  #        uses: actions/cache@v5
+  #        with:
+  #          path: |
+  #            ~/.gradle/caches
+  #            ~/.gradle/wrapper
+  #          key: ubuntu-latest-gradle-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}
+  #          restore-keys: |
+  #            ubuntu-latest-gradle-
+  #
+  #      - name: Make gradlew executable
+  #        run: chmod +x gradlew || true
+  #
+  #      - name: Run common JVM tests (:composeApp:jvmTest)
+  #        run: |
+  #          ./gradlew --no-daemon --stacktrace :composeApp:jvmTest
+  #
+  #  android-tests:
+  #    name: Android unit tests
+  #    runs-on: ubuntu-latest
+  #    needs: build
+  #    steps:
+  #      - name: Checkout
+  #        uses: actions/checkout@v6
+  #
+  #      - name: Setup Java
+  #        uses: actions/setup-java@v5
+  #        with:
+  #          distribution: zulu
+  #          java-version: 25
+  #
+  #      - name: Cache Gradle
+  #        uses: actions/cache@v5
+  #        with:
+  #          path: |
+  #            ~/.gradle/caches
+  #            ~/.gradle/wrapper
+  #          key: ubuntu-latest-gradle-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}
+  #          restore-keys: |
+  #            ubuntu-latest-gradle-
+  #
+  #      - name: Make gradlew executable
+  #        run: chmod +x gradlew || true
+  #
+  #      - name: Run Android unit tests (:androidApp:testDebugUnitTest)
+  #        run: |
+  #          ./gradlew --no-daemon --stacktrace :androidApp:testDebugUnitTest

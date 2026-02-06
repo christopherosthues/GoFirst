@@ -10,7 +10,6 @@ on:
     branches: [ 'release/**' ]
   workflow_dispatch:
 
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -171,12 +170,19 @@ jobs:
             composeApp/build/compose/binaries/**/*.msi
           retention-days: 14
 
-  create_release:
-    name: Create Draft Release and Attach Artifacts
-    needs: [ package-ubuntu, package-macos, package-windows ]
+  # Prepare a draft release for GitHub Releases page for the manual verification
+  # If accepted and published, the release workflow would be triggered
+  releaseDraft:
+    name: Release draft
+    if: ${{ startsWith(github.ref, 'refs/heads/release/') && github.event_name != 'pull_request' }}
+    needs: [ package-android, package-ubuntu, package-macos, package-windows ]
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
-      - name: Checkout
+
+      # Check out the current repository
+      - name: Fetch Sources
         uses: actions/checkout@v6
 
       - name: Download artifacts
@@ -184,32 +190,25 @@ jobs:
         with:
           path: artifacts
 
-#      - name: Create draft release
-#        id: create_release
-#        uses: actions/create-release@v1
-#        with:
-#          tag_name: ${{ github.ref_name }}-ci-${{ github.run_number }}
-#          release_name: ${{ github.ref_name }} (CI build #${{ github.run_number }})
-#          body: |
-#            Automated draft release created by CI for branch ${{ github.ref_name }}.
-#          draft: true
-#          prerelease: false
-#
-#      - name: Upload artifacts to draft release
-#        if: steps.create_release.outputs.upload_url != ''
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#        run: |
-#          set -e
-#          upload_url="${{ steps.create_release.outputs.upload_url }}"
-#          upload_url="${upload_url%\{*}"
-#          echo "Upload URL: $upload_url"
-#          find artifacts -type f \( -name '*.apk' -o -name '*.dmg' -o -name '*.deb' -o -name '*.msi' \) -print0 | while IFS= read -r -d '' file; do
-#            echo "Uploading $file ..."
-#            filename=$(basename "$file")
-#            curl -sSL -X POST \
-#              -H "Authorization: token ${GITHUB_TOKEN}" \
-#              -H "Content-Type: application/octet-stream" \
-#              --data-binary @"$file" "$upload_url?name=$filename"
-#            echo "Uploaded $filename"
-#          done
+      # Remove old release drafts by using the curl request for the available releases with a draft flag
+      - name: Remove Old Release Drafts
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh api repos/{owner}/{repo}/releases \
+            --jq '.[] | select(.draft == true) | .id' \
+            | xargs -I '{}' gh api -X DELETE repos/{owner}/{repo}/releases/{}
+
+      # Create a new release draft - which is not publicly visible and requires manual acceptance
+      - name: Create Release Draft
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          VERSION=$(./gradlew properties --property version --quiet --console=plain | tail -n 1 | cut -f2- -d ' ')
+          RELEASE_NOTE="./build/tmp/release_note.txt"
+          ./gradlew getChangelog --unreleased --no-header --quiet --console=plain --output-file=$RELEASE_NOTE
+          
+          gh release create $VERSION artifacts/* \
+          --draft \
+          --title $VERSION \
+          --notes-file $RELEASE_NOTE

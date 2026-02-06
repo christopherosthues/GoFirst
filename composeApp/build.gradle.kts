@@ -9,7 +9,10 @@ plugins {
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.composeHotReload)
     alias(libs.plugins.jetbrains.kotlin.serialization)
+    alias(libs.plugins.changelog)
 }
+
+fun properties(key: String) = providers.gradleProperty(key)
 
 val appVersionName = project.property("appVersionName") as String
 
@@ -103,6 +106,12 @@ kotlin {
 
 dependencies {
     androidRuntimeClasspath(libs.compose.uiTooling)
+}
+
+// Configure Gradle Changelog Plugin - read more: https://github.com/JetBrains/gradle-changelog-plugin
+changelog {
+    groups = listOf("Added", "Changed", "Removed", "Fixed")
+    repositoryUrl = properties("appRepositoryUrl")
 }
 
 compose.desktop {
