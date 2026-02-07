@@ -46,6 +46,10 @@ class PlayViewModel : ViewModel() {
         if (_selectedPlayerId.value != null) {
             reset()
         }
+
+        // Do not add players if selection is in progress
+        if (selectionJob != null) return
+
         if (!_touches.containsKey(id)) {
             val color = colors[(_touches.size) % colors.size]
             _touches[id] = TouchPoint(id, position, color)
@@ -61,6 +65,9 @@ class PlayViewModel : ViewModel() {
     }
 
     fun onTouchUp(id: Long) {
+        // Do not remove players if selection is in progress or completed
+        if (selectionJob != null) return
+
         _touches.remove(id)
         if (_touches.size < 2 && _selectedPlayerId.value == null && _countdown.value != null) {
             cancelSelection()
