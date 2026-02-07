@@ -23,6 +23,8 @@ class PlayViewModel : ViewModel() {
     private val _countdown = mutableStateOf<Int?>(null)
     val countdown: State<Int?> = _countdown
 
+    private val _isSelectingPlayer = mutableStateOf(false)
+
     private val _highlightedPlayerId = mutableStateOf<Long?>(null)
     val highlightedPlayerId: State<Long?> = _highlightedPlayerId
 
@@ -48,7 +50,7 @@ class PlayViewModel : ViewModel() {
         }
 
         // Do not add players if selection is in progress
-        if (selectionJob != null) return
+        if (_isSelectingPlayer.value) return
 
         if (!_touches.containsKey(id)) {
             val color = colors[(_touches.size) % colors.size]
@@ -66,7 +68,7 @@ class PlayViewModel : ViewModel() {
 
     fun onTouchUp(id: Long) {
         // Do not remove players if selection is in progress or completed
-        if (selectionJob != null) return
+        if (_isSelectingPlayer.value || _selectedPlayerId.value != null) return
 
         _touches.remove(id)
         if (_touches.size < 2 && _selectedPlayerId.value == null && _countdown.value != null) {
@@ -88,6 +90,7 @@ class PlayViewModel : ViewModel() {
                 _countdown.value = 0
                 delay(200) // Small pause at 0
                 _countdown.value = null
+                _isSelectingPlayer.value = true
                 animateSelection()
             }
         }
@@ -114,6 +117,7 @@ class PlayViewModel : ViewModel() {
         _selectedPlayerId.value = keys[Random.nextInt(keys.size)]
         _highlightedPlayerId.value = null
         selectionJob = null
+        _isSelectingPlayer.value = false
     }
 
     private fun cancelSelection() {

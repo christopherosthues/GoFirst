@@ -13,6 +13,7 @@ kotlin {
         implementation(projects.composeApp)
         implementation(libs.compose.uiToolingPreview)
         implementation(libs.androidx.activity.compose)
+        implementation(libs.androidx.core.splashscreen)
 
         implementation(libs.koin.android)
         implementation(libs.koin.androidx.compose)

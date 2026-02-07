@@ -21,6 +21,7 @@ kotlinx-datetime = "0.7.1"
 kotlinSerialization = "1.10.0"
 material3 = "1.10.0-alpha05"
 changelog = "2.5.0"
+androidx-splashscreen = "1.2.0"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -52,6 +53,8 @@ koin-compose-viewmodel-navigation = { module = "io.insert-koin:koin-compose-view
 androidx-navigation-compose = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "androidx-navigation" }
 
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinSerialization" }
+
+androidx-core-splashscreen = { group = "androidx.core", name = "core-splashscreen", version.ref = "androidx-splashscreen" }
 
 [plugins]
 changelog = { id = "org.jetbrains.changelog", version.ref = "changelog" }
