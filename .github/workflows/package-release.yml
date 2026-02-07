@@ -118,7 +118,7 @@ jobs:
           APK=$(ls androidApp/build/outputs/apk/release/*.apk 2>/dev/null | head -n 1 || true)
           if [ -n "$APK" ]; then
             DEST_DIR=$(dirname "$APK")
-            if [ -f android.jsk ]; then
+            if [ -f android.jks ]; then
               DEST_FILE=$DEST_DIR/GoFirst.apk
             else
               DEST_FILE=$DEST_DIR/GoFirst-unsigned.apk
