@@ -97,13 +97,8 @@ jobs:
           SIGN_ARGS=""
           if [ -f android.jks ]; then
             echo "Signing APK with keystore android.jks"
-            KEYSTORE_FILE=""
-            if [ -f android.jks ]; then
-              KEYSTORE_FILE="$(pwd)/android.jks"
-              echo "Using keystore at $KEYSTORE_FILE"
-            else
-              echo "No keystore found at `android.jks`; will build unsigned APK"
-            fi
+            KEYSTORE_FILE="$(pwd)/android.jks"
+            echo "Using keystore at $KEYSTORE_FILE"
             SIGN_ARGS="-Pandroid.injected.signing.store.file=$KEYSTORE_FILE \
                        -Pandroid.injected.signing.store.password=${{ secrets.ANDROID_KEYSTORE_PASSWORD }} \
                        -Pandroid.injected.signing.key.alias=${{ secrets.ANDROID_KEY_ALIAS }} \
