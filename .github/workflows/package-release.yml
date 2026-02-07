@@ -81,10 +81,38 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-android-
 
+      - name: Prepare signing key (if provided)
+        run: |
+          if [ -n "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" ]; then
+            echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 --decode > android.jks
+            echo "Keystore created at android.jks"
+          else
+            echo "No keystore secret found; building unsigned APK"
+          fi
+#            chmod 600 android.jks
+
       - name: Build APK
         run: |
           chmod +x gradlew || true
-          ./gradlew --no-daemon --stacktrace :androidApp:assembleRelease
+          SIGN_ARGS=""
+          if [ -f android.jks ]; then
+            SIGN_ARGS="-Pandroid.injected.signing.store.file=android.jks \
+                       -Pandroid.injected.signing.store.password=${{ secrets.ANDROID_KEYSTORE_PASSWORD }} \
+                       -Pandroid.injected.signing.key.alias=${{ secrets.ANDROID_KEY_ALIAS }} \
+                       -Pandroid.injected.signing.key.password=${{ secrets.ANDROID_KEY_PASSWORD }}"
+          fi
+          ./gradlew --no-daemon --stacktrace :androidApp:assembleRelease $SIGN_ARGS
+
+      - name: Name APK
+        run: |
+          APK=$(ls androidApp/build/outputs/apk/release/*.apk 2>/dev/null | head -n 1 || true)
+          if [ -n "$APK" ]; then
+            DEST_DIR=$(dirname "$APK")
+            mv "$APK" "$DEST_DIR/GoFirst.apk"
+            echo "Renamed $APK -> $DEST_DIR/GoFirst.apk"
+          else
+            echo "No APK found to rename"
+          fi
 
       - name: Upload Android artifacts
         uses: actions/upload-artifact@v6
