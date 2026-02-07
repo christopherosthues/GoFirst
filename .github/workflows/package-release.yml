@@ -84,7 +84,7 @@ jobs:
       - name: Prepare signing key (if provided)
         run: |
           if [ -n "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" ]; then
-            echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 --decode > androidApp/android.jks
+            echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 --decode > android.jks
             echo "Keystore created at android.jks"
           else
             echo "No keystore secret found; building unsigned APK"
