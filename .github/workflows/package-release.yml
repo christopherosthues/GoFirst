@@ -96,10 +96,20 @@ jobs:
           chmod +x gradlew || true
           SIGN_ARGS=""
           if [ -f android.jks ]; then
-            SIGN_ARGS="-Pandroid.injected.signing.store.file=android.jks \
+            echo "Signing APK with keystore android.jks"
+            KEYSTORE_FILE=""
+            if [ -f android.jks ]; then
+              KEYSTORE_FILE="$(pwd)/android.jks"
+              echo "Using keystore at $KEYSTORE_FILE"
+            else
+              echo "No keystore found at `android.jks`; will build unsigned APK"
+            fi
+            SIGN_ARGS="-Pandroid.injected.signing.store.file=$KEYSTORE_FILE \
                        -Pandroid.injected.signing.store.password=${{ secrets.ANDROID_KEYSTORE_PASSWORD }} \
                        -Pandroid.injected.signing.key.alias=${{ secrets.ANDROID_KEY_ALIAS }} \
                        -Pandroid.injected.signing.key.password=${{ secrets.ANDROID_KEY_PASSWORD }}"
+          else
+            echo "No keystore found; building unsigned APK"
           fi
           ./gradlew --no-daemon --stacktrace :androidApp:assembleRelease $SIGN_ARGS
 
@@ -108,8 +118,13 @@ jobs:
           APK=$(ls androidApp/build/outputs/apk/release/*.apk 2>/dev/null | head -n 1 || true)
           if [ -n "$APK" ]; then
             DEST_DIR=$(dirname "$APK")
-            mv "$APK" "$DEST_DIR/GoFirst.apk"
-            echo "Renamed $APK -> $DEST_DIR/GoFirst.apk"
+            if [ -f android.jsk ]; then
+              DEST_FILE=$DEST_DIR/GoFirst.apk
+            else
+              DEST_FILE=$DEST_DIR/GoFirst-unsigned.apk
+            fi
+            mv "$APK" "$DEST_FILE"
+            echo "Renamed $APK -> $DEST_FILE"
           else
             echo "No APK found to rename"
           fi
