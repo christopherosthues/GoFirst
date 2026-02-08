@@ -289,7 +289,7 @@ jobs:
   releaseDraft:
     name: Release draft
     if: ${{ startsWith(github.ref, 'refs/heads/release/') && github.event_name != 'pull_request' }}
-    needs: [ package-android, package-js, package-js-wasm, package-ubuntu, package-macos, package-windows ]
+    needs: [ package-android, package-ubuntu, package-macos, package-windows ]
     runs-on: ubuntu-latest
     permissions:
       contents: write
