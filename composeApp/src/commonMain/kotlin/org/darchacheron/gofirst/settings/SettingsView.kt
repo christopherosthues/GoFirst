@@ -4,11 +4,8 @@ package org.darchacheron.gofirst.settings
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
@@ -48,7 +45,10 @@ import org.koin.compose.koinInject
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingsView(settingsViewModel: SettingsViewModel = koinInject()) {
+fun SettingsView(
+    settingsViewModel: SettingsViewModel = koinInject(),
+    onBack: () -> Unit = {}
+) {
     val settings = settingsViewModel.settingsFlow.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
@@ -61,7 +61,7 @@ fun SettingsView(settingsViewModel: SettingsViewModel = koinInject()) {
                 navigationIcon = {
                     IconButton(onClick = {
                         settingsViewModel.revertChanges()
-//                        navHostController.navigateUp()
+                        onBack()
                     }) {
                         Icon(
                             painter = painterResource(Res.drawable.ic_back),
@@ -89,7 +89,7 @@ fun SettingsView(settingsViewModel: SettingsViewModel = koinInject()) {
                 }
                 FloatingActionButton(
                     onClick = {
-//                        settingsViewModel.saveSettings { navHostController.navigateUp() }
+                        settingsViewModel.saveSettings { onBack() }
                     }
                 ) {
                     Icon(
@@ -152,4 +152,3 @@ private fun SettingsControl(settingsViewModel: SettingsViewModel, settings: Sett
         }
     }
 }
-

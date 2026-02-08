@@ -1,4 +1,7 @@
 <resources>
+    <string name="play_title">Start player selection</string>
+    <string name="play_content_description_settings">Open settings</string>
+
     <string name="settings_title">Settings</string>
     <string name="settings_theme">Theme</string>
     <string name="settings_content_description_back">Go back</string>

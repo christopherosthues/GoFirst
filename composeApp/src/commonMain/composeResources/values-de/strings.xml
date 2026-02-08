@@ -1,4 +1,7 @@
 <resources>
+    <string name="play_title">Startspielerauswahl</string>
+    <string name="play_content_description_settings">Einstellungen öffnen</string>
+
     <string name="settings_title">Einstellungen</string>
     <string name="settings_theme">Design</string>
     <string name="settings_content_description_back">Zurück</string>

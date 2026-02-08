@@ -1,15 +1,42 @@
 package org.darchacheron.gofirst
 
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation3.runtime.NavEntry
+import androidx.navigation3.runtime.NavKey
+import androidx.navigation3.runtime.entryProvider
+import androidx.navigation3.runtime.rememberNavBackStack
+import androidx.navigation3.ui.NavDisplay
+import androidx.savedstate.serialization.SavedStateConfiguration
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.modules.SerializersModule
+import kotlinx.serialization.modules.polymorphic
 import org.darchacheron.gofirst.play.PlayScreen
 import org.darchacheron.gofirst.settings.Settings
+import org.darchacheron.gofirst.settings.SettingsView
 import org.darchacheron.gofirst.settings.SettingsViewModel
 import org.darchacheron.gofirst.ui.AppTheme
 import org.darchacheron.gofirst.ui.UiState
 import org.koin.compose.KoinApplication
 import org.koin.compose.koinInject
+
+@Serializable
+sealed interface NavRoute : NavKey {
+    @Serializable
+    data object Play : NavRoute
+    @Serializable
+    data object Settings : NavRoute
+}
+
+private val navConfig = SavedStateConfiguration {
+    serializersModule = SerializersModule {
+        polymorphic(NavKey::class) {
+            subclass(NavRoute.Play::class, NavRoute.Play.serializer())
+            subclass(NavRoute.Settings::class, NavRoute.Settings.serializer())
+        }
+    }
+}
 
 @Composable
 @Preview
@@ -27,9 +54,32 @@ fun App(
         }
 
         AppTheme(themeMode = settings.themeMode) {
-            MaterialTheme {
-                PlayScreen()
-            }
+            val backStack = rememberNavBackStack(navConfig, NavRoute.Play)
+
+            NavDisplay(
+                backStack = backStack,
+                onBack = { backStack.removeLastOrNull() },
+                entryProvider = { key ->
+                    when (key) {
+                        NavRoute.Play -> NavEntry(key) {
+                            PlayScreen(
+                                onSettingsClick = { backStack.add(NavRoute.Settings) }
+                            )
+                        }
+
+                        NavRoute.Settings -> NavEntry(key) {
+                            SettingsView(
+                                onBack = {
+                                    if (backStack.size > 1) {
+                                        backStack.removeAt(backStack.size - 1)
+                                    }
+                                }
+                            )
+                        }
+
+                        else -> NavEntry(key) { Text("Unknown route") }
+                    }
+                })
         }
     }
 }

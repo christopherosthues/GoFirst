@@ -57,10 +57,10 @@ class SettingsViewModel(
     }
 
     fun saveSettings(onSuccess: () -> Unit = {}) {
+        val currentValue = _settingsFlow.value
         _settingsFlow.update { UiState.Loading() }
         viewModelScope.launch {
             try {
-                val currentValue = _settingsFlow.value
                 val settings: Settings = if (currentValue is UiState.Success<*>) currentValue.data as Settings else Settings()
                 val settingsToSave =
                     Settings(
