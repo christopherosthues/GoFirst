@@ -1,5 +1,10 @@
 package org.darchacheron.gofirst
 
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
+import androidx.compose.animation.togetherWith
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.tooling.preview.Preview
@@ -79,7 +84,17 @@ fun App(
 
                         else -> NavEntry(key) { Text("Unknown route") }
                     }
-                })
+                },
+                transitionSpec = {
+                    slideInVertically(initialOffsetY = { it }) togetherWith ExitTransition.KeepUntilTransitionsFinished
+                },
+                popTransitionSpec = {
+                    EnterTransition.None togetherWith slideOutVertically(targetOffsetY = { it })
+                },
+                predictivePopTransitionSpec = {
+                    EnterTransition.None togetherWith slideOutVertically(targetOffsetY = { it })
+                }
+            )
         }
     }
 }
