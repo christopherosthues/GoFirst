@@ -1,9 +1,20 @@
 <resources>
     <string name="settings_title">Einstellungen</string>
     <string name="settings_theme">Design</string>
+    <string name="settings_content_description_back">Zurück</string>
+    <string name="settings_content_description_reset">Zurücksetzen</string>
+    <string name="settings_content_description_save">Speichern</string>
 
     <!-- Theme -->
     <string name="theme_light">Hell</string>
     <string name="theme_dark">Dunkel</string>
     <string name="theme_system">System</string>
+
+    <string name="settings_error_loading_settings">Fehler beim Laden der Einstellungen</string>
+    <string name="settings_error_saving_settings">Fehler beim Speichern der Einstellungen</string>
+    <string name="settings_error_resetting_settings">Fehler beim Zurücksetzen der Einstellungen</string>
+
+    <string name="settings_save">Speichern</string>
+    <string name="settings_cancel">Abbrechen</string>
+    <string name="settings_revert">Zurücksetzen</string>
 </resources>
