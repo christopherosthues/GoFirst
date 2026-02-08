@@ -2,6 +2,14 @@
 
 # GoFirst Changelog
 
+## [Unreleased]
+
+### Added
+- Settings to configure theme and player colors.
+
+### Removed
+- Support for Web (Wasm/JS)
+
 ## [1.0.0] - 2026-02-07
 
 ### Added

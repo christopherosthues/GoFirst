@@ -21,4 +21,8 @@
     <string name="settings_save">Speichern</string>
     <string name="settings_cancel">Abbrechen</string>
     <string name="settings_revert">Zurücksetzen</string>
+
+    <string name="settings_color_title">Farbauswahl</string>
+    <string name="settings_color_select">Auswählen</string>
+    <string name="settings_color_cancel">Abbrechen</string>
 </resources>

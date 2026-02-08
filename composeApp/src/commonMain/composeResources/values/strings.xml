@@ -21,4 +21,8 @@
     <string name="settings_save">Save</string>
     <string name="settings_cancel">Cancel</string>
     <string name="settings_revert">Revert</string>
+
+    <string name="settings_color_title">Pick a color</string>
+    <string name="settings_color_select">Select</string>
+    <string name="settings_color_cancel">Cancel</string>
 </resources>
