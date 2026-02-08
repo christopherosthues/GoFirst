@@ -22,7 +22,7 @@ material3 = "1.11.0-alpha02"
 changelog = "2.5.0"
 androidx-splashscreen = "1.2.0"
 androidx-datastore = "1.2.0"
-multiplatform-nav3-ui = "1.0.0-alpha06"
+multiplatform-nav3-ui = "1.1.0-alpha02"
 compose-multiplatform-lifecycle = "2.10.0-alpha08"
 colorpicker = "1.1.3"
 
