@@ -4,6 +4,7 @@
 
     <string name="settings_title">Settings</string>
     <string name="settings_theme">Theme</string>
+    <string name="settings_player">Player %1$s</string>
     <string name="settings_content_description_back">Go back</string>
     <string name="settings_content_description_reset">Reset to defaults</string>
     <string name="settings_content_description_save">Save</string>

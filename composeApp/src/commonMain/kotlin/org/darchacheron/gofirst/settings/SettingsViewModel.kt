@@ -41,16 +41,16 @@ class SettingsViewModel(
         _settingsFlow.update {
             UiState.Success(
                 settings.copy(
-                    player1Color = if (playerId == 1) color else settings.player1Color,
-                    player2Color = if (playerId == 2) color else settings.player2Color,
-                    player3Color = if (playerId == 3) color else settings.player3Color,
-                    player4Color = if (playerId == 4) color else settings.player4Color,
-                    player5Color = if (playerId == 5) color else settings.player5Color,
-                    player6Color = if (playerId == 6) color else settings.player6Color,
-                    player7Color = if (playerId == 7) color else settings.player7Color,
-                    player8Color = if (playerId == 8) color else settings.player8Color,
-                    player9Color = if (playerId == 9) color else settings.player9Color,
-                    player10Color = if (playerId == 10) color else settings.player10Color,
+                    player1Color = if (playerId == 0) color else settings.player1Color,
+                    player2Color = if (playerId == 1) color else settings.player2Color,
+                    player3Color = if (playerId == 2) color else settings.player3Color,
+                    player4Color = if (playerId == 3) color else settings.player4Color,
+                    player5Color = if (playerId == 4) color else settings.player5Color,
+                    player6Color = if (playerId == 5) color else settings.player6Color,
+                    player7Color = if (playerId == 6) color else settings.player7Color,
+                    player8Color = if (playerId == 7) color else settings.player8Color,
+                    player9Color = if (playerId == 8) color else settings.player9Color,
+                    player10Color = if (playerId == 9) color else settings.player10Color,
                 )
             )
         }
@@ -65,6 +65,16 @@ class SettingsViewModel(
                 val settingsToSave =
                     Settings(
                         themeMode = settings.themeMode,
+                        player1Color = settings.player1Color,
+                        player2Color = settings.player2Color,
+                        player3Color = settings.player3Color,
+                        player4Color = settings.player4Color,
+                        player5Color = settings.player5Color,
+                        player6Color = settings.player6Color,
+                        player7Color = settings.player7Color,
+                        player8Color = settings.player8Color,
+                        player9Color = settings.player9Color,
+                        player10Color = settings.player10Color,
                     )
                 settingsRepository.saveSettings(settingsToSave)
                 _settingsFlow.update {

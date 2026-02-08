@@ -90,6 +90,8 @@ kotlin {
 //            implementation(libs.androidx.navigation.compose)
             implementation(libs.kotlinx.serialization.json)
 
+            implementation(libs.compose.colorpicker)
+
             api(libs.androidx.datastore)
             api(libs.androidx.datastore.preferences)
         }
