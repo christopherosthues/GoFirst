@@ -41,7 +41,8 @@ class PlayViewModel : ViewModel() {
         Color(0xFFFFB74D), // Orange
         Color(0xFFBA68C8), // Purple
         Color(0xFF4DB6AC), // Teal
-        Color(0xFFF06292)  // Pink
+        Color(0xFFF06292), // Pink
+        Color(0xFF3D1E06), // Brown
     )
 
     fun onTouchDown(id: Long, position: Offset) {
