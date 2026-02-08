@@ -7,7 +7,19 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import org.darchacheron.gofirst.settings.ThemeMode
-import org.darthacheron.fitbe.settings.ThemeMode
+
+internal val PlayerColors = listOf(
+    Color(0xFFE57373), // Red
+    Color(0xFF64B5F6), // Blue
+    Color(0xFF81C784), // Green
+    Color(0xFFFFF176), // Yellow
+    Color(0xFFFFB74D), // Orange
+    Color(0xFFBA68C8), // Purple
+    Color(0xFF4DB6AC), // Teal
+    Color(0xFFF06292), // Pink
+    Color(0xFF3D1E06), // Brown
+    Color(0xFF0920B6), // Brown
+)
 
 private val LightColorScheme =
     lightColorScheme(

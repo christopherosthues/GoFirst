@@ -1,9 +1,9 @@
 package org.darchacheron.gofirst.settings
 
-import fitbe.composeapp.generated.resources.Res
-import fitbe.composeapp.generated.resources.theme_dark
-import fitbe.composeapp.generated.resources.theme_light
-import fitbe.composeapp.generated.resources.theme_system
+import gofirst.composeapp.generated.resources.Res
+import gofirst.composeapp.generated.resources.theme_dark
+import gofirst.composeapp.generated.resources.theme_light
+import gofirst.composeapp.generated.resources.theme_system
 import org.jetbrains.compose.resources.StringResource
 
 /**

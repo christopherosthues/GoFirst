@@ -1,5 +1,6 @@
 package org.darchacheron.gofirst.play
 
+import androidx.collection.size
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
@@ -8,6 +9,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.last
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
+import org.darchacheron.gofirst.settings.Settings
+import org.darchacheron.gofirst.settings.SettingsRepository
+import org.darchacheron.gofirst.ui.PlayerColors
 import kotlin.random.Random
 
 data class TouchPoint(
@@ -16,7 +26,7 @@ data class TouchPoint(
     val color: Color
 )
 
-class PlayViewModel : ViewModel() {
+class PlayViewModel(private val settingsRepository: SettingsRepository) : ViewModel() {
     private val _touches = mutableStateMapOf<Long, TouchPoint>()
     val touches: Map<Long, TouchPoint> = _touches
 
@@ -33,17 +43,25 @@ class PlayViewModel : ViewModel() {
 
     private var selectionJob: Job? = null
 
-    private val colors = listOf(
-        Color(0xFFE57373), // Red
-        Color(0xFF64B5F6), // Blue
-        Color(0xFF81C784), // Green
-        Color(0xFFFFF176), // Yellow
-        Color(0xFFFFB74D), // Orange
-        Color(0xFFBA68C8), // Purple
-        Color(0xFF4DB6AC), // Teal
-        Color(0xFFF06292), // Pink
-        Color(0xFF3D1E06), // Brown
-    )
+    private val playerColors = settingsRepository.getSettingsFlow()
+        .map { getColors(it) }
+        .catch { emit(PlayerColors) }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, PlayerColors)
+
+    private fun getColors(settings: Settings): List<Color> {
+        return listOf(
+            Color(settings.player1Color.toULong()),
+            Color(settings.player2Color.toULong()),
+            Color(settings.player3Color.toULong()),
+            Color(settings.player4Color.toULong()),
+            Color(settings.player5Color.toULong()),
+            Color(settings.player6Color.toULong()),
+            Color(settings.player7Color.toULong()),
+            Color(settings.player8Color.toULong()),
+            Color(settings.player9Color.toULong()),
+            Color(settings.player10Color.toULong()),
+        )
+    }
 
     fun onTouchDown(id: Long, position: Offset) {
         if (_selectedPlayerId.value != null) {
@@ -53,11 +71,12 @@ class PlayViewModel : ViewModel() {
         // Do not add players if selection is in progress
         if (_isSelectingPlayer.value) return
 
+        // Update touches immediately for better responsiveness
         if (!_touches.containsKey(id)) {
+            val colors = playerColors.value
             val color = colors[(_touches.size) % colors.size]
             _touches[id] = TouchPoint(id, position, color)
         }
-
         startSelectionProcess()
     }
 
