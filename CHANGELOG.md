@@ -5,6 +5,11 @@
 ## [Unreleased]
 
 ### Added
+- Added screen transition animations
+
+## [1.1.0] - 2026-02-08
+
+### Added
 - Settings to configure theme and player colors.
 
 ### Removed
