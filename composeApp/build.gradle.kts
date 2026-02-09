@@ -127,7 +127,7 @@ compose.desktop {
 
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "GoFirst"
+            packageName = properties("appName").get()
             packageVersion = appVersionName
         }
     }
