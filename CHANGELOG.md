@@ -2,7 +2,7 @@
 
 # GoFirst Changelog
 
-## [Unreleased]
+## [1.3.0] - 2026-02-09
 
 ### Added
 - Add tooltip text to main screen
