@@ -4,31 +4,51 @@
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
-  <group android:scaleX="0.76"
-      android:scaleY="0.76"
-      android:translateX="12.96"
-      android:translateY="12.96">
+    <group
+        android:scaleX="0.76"
+        android:scaleY="0.76"
+        android:translateX="12.96"
+        android:translateY="12.96">
 
-      <!-- Background Circle 1 (Blue) -->
-      <path
-          android:fillColor="#64B5F6"
-          android:pathData="M38,85 A20,20 0 1,1 38,45 A20,20 0 1,1 38,85Z" />
+        <!-- Background Circle 1 (Blue) -->
+        <group
+            android:name="blue_circle_group"
+            android:pivotX="38"
+            android:pivotY="65">
+            <path
+                android:fillColor="#64B5F6"
+                android:pathData="M38,85 A20,20 0 1,1 38,45 A20,20 0 1,1 38,85Z" />
+        </group>
 
-      <!-- Background Circle 2 (Green) -->
-      <path
-          android:fillColor="#81C784"
-          android:pathData="M70,85 A20,20 0 1,1 70,45 A20,20 0 1,1 70,85Z" />
+        <!-- Background Circle 2 (Green) -->
+        <group
+            android:name="green_circle_group"
+            android:pivotX="70"
+            android:pivotY="65">
+            <path
+                android:fillColor="#81C784"
+                android:pathData="M70,85 A20,20 0 1,1 70,45 A20,20 0 1,1 70,85Z" />
+        </group>
 
-      <!-- Winner Circle (Red) -->
-      <path
-          android:fillColor="#E57373"
-          android:pathData="M54,66 A24,24 0 1,1 54,18 A24,24 0 1,1 54,66Z" />
+        <!-- Winner Circle (Red) -->
+        <group
+            android:name="red_circle_group"
+            android:pivotX="54"
+            android:pivotY="42">
+            <path
+                android:fillColor="#E57373"
+                android:pathData="M54,66 A24,24 0 1,1 54,18 A24,24 0 1,1 54,66Z" />
+        </group>
 
-      <!-- Winner's Ring (White Stroke) -->
-      <path
-          android:pathData="M54,70 A28,28 0 1,1 54,14 A28,28 0 1,1 54,70Z"
-          android:strokeWidth="4"
-          android:strokeColor="#FFFFFF" />
-
-  </group>
+        <!-- Winner's Ring (White Stroke) -->
+        <group
+            android:name="white_ring_group"
+            android:pivotX="54"
+            android:pivotY="42">
+            <path
+                android:pathData="M54,70 A28,28 0 1,1 54,14 A28,28 0 1,1 54,70Z"
+                android:strokeWidth="4"
+                android:strokeColor="#FFFFFF" />
+        </group>
+    </group>
 </vector>

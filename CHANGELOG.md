@@ -5,6 +5,12 @@
 ## [Unreleased]
 
 ### Added
+- Add tooltip text to main screen
+- Add animated splash screen logo
+
+## [1.2.0] - 2026-02-08
+
+### Added
 - Added screen transition animations
 
 ## [1.1.0] - 2026-02-08

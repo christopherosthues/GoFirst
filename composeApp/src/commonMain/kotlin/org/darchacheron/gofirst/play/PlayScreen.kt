@@ -36,10 +36,13 @@ import androidx.compose.ui.input.pointer.changedToUp
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.input.pointer.positionChange
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import gofirst.composeapp.generated.resources.Res
 import gofirst.composeapp.generated.resources.ic_settings
 import gofirst.composeapp.generated.resources.play_content_description_settings
+import gofirst.composeapp.generated.resources.play_description
 import gofirst.composeapp.generated.resources.play_title
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -112,6 +115,16 @@ fun PlayScreen(
                     fontSize = 120.sp,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.align(Alignment.Center)
+                )
+            }
+
+            if (touches.size < 2) {
+                Text(
+                    text = stringResource(Res.string.play_description),
+                    fontSize = 24.sp,
+                    softWrap = true,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(32.dp).align(Alignment.Center)
                 )
             }
         }

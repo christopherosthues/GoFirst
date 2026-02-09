@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animated-vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:drawable="@drawable/ic_launcher_foreground">
+    <target
+        android:name="blue_circle_group"
+        android:animation="@animator/blue_grow" />
+    <target
+        android:name="green_circle_group"
+        android:animation="@animator/green_grow" />
+    <target
+        android:name="red_circle_group"
+        android:animation="@animator/red_grow" />
+    <target
+        android:name="white_ring_group"
+        android:animation="@animator/white_ring_grow" />
+</animated-vector>
