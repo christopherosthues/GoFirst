@@ -7,9 +7,14 @@ name: Package & Draft Release
 
 on:
   push:
-    branches: [ 'release/**', "main" ]
+    branches: [ '**' ]
   workflow_dispatch:
     inputs:
+      run_tests:
+        description: 'Run tests'
+        required: true
+        type: boolean
+        default: true
       build_android:
         description: 'Build Android (APK)'
         required: true
@@ -59,9 +64,50 @@ env:
   GRADLE_OPTS: "-Dorg.gradle.daemon=false"
 
 jobs:
+  run_tests:
+    name: Test
+    if: github.event_name == 'push' || github.event.inputs.run_tests == 'true'
+    runs-on: ubuntu-latest
+    outputs:
+      artifacts-path: artifacts
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: zulu
+          java-version: 25
+
+      - name: Cache Gradle
+        uses: actions/cache@v5
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-ubuntu-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-test-
+
+      - name: Execute tests
+        run: |
+          chmod +x gradlew || true
+          ./gradlew --no-daemon --stacktrace :composeApp:jvmTest :composeApp:testAndroid
+
+      - name: Upload test artifacts
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: test-artifacts
+          path: |
+            composeApp/build/reports/tests/**
+          retention-days: 14
+
   package-ubuntu:
     name: Package (Ubuntu) - DEB
     if: github.event_name == 'push' || github.event.inputs.build_ubuntu == 'true'
+    needs: [ run_tests ]
     runs-on: ubuntu-latest
     outputs:
       artifacts-path: artifacts
@@ -131,6 +177,7 @@ jobs:
   package-android:
     name: Package (Android) - APK
     if: github.event_name == 'push' || github.event.inputs.build_android == 'true'
+    needs: [ run_tests ]
     runs-on: ubuntu-latest
     outputs:
       artifacts-path: artifacts
@@ -209,6 +256,7 @@ jobs:
 
 #  package-js:
 #    name: Package (JS) - ZIP
+#    needs: [ run_tests ]
 #    runs-on: ubuntu-latest
 #    outputs:
 #      artifacts-path: artifacts
@@ -247,6 +295,7 @@ jobs:
 #
 #  package-js-wasm:
 #    name: Package (WASM) - ZIP
+#    needs: [ run_tests ]
 #    runs-on: ubuntu-latest
 #    outputs:
 #      artifacts-path: artifacts
@@ -286,6 +335,7 @@ jobs:
   package-macos:
     name: Package (macOS) - DMG
     if: github.event_name == 'push' || github.event.inputs.build_macos == 'true'
+    needs: [ run_tests ]
     runs-on: macos-latest
     outputs:
       artifacts-path: artifacts
@@ -362,6 +412,7 @@ jobs:
   package-windows:
     name: Package (Windows) - MSI
     if: github.event_name == 'push' || github.event.inputs.build_windows == 'true'
+    needs: [ run_tests ]
     runs-on: windows-latest
     outputs:
       artifacts-path: artifacts
