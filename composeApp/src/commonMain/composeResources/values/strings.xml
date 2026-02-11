@@ -1,0 +1,29 @@
+<resources>
+    <string name="play_title">Start player selection</string>
+    <string name="play_content_description_settings">Open settings</string>
+    <string name="play_description">Put your fingers on the screen to start</string>
+
+    <string name="settings_title">Settings</string>
+    <string name="settings_theme">Theme</string>
+    <string name="settings_player">Player %1$s</string>
+    <string name="settings_content_description_back">Go back</string>
+    <string name="settings_content_description_reset">Reset to defaults</string>
+    <string name="settings_content_description_save">Save</string>
+
+    <!-- Theme -->
+    <string name="theme_light">Light</string>
+    <string name="theme_dark">Dark</string>
+    <string name="theme_system">System</string>
+
+    <string name="settings_error_loading_settings">Error loading settings</string>
+    <string name="settings_error_saving_settings">Error saving settings</string>
+    <string name="settings_error_resetting_settings">Error resetting settings</string>
+
+    <string name="settings_save">Save</string>
+    <string name="settings_cancel">Cancel</string>
+    <string name="settings_revert">Revert</string>
+
+    <string name="settings_color_title">Pick a color</string>
+    <string name="settings_color_select">Select</string>
+    <string name="settings_color_cancel">Cancel</string>
+</resources>
