@@ -41,6 +41,7 @@ class PlayViewModel(private val settingsRepository: SettingsRepository) : ViewMo
     val selectedPlayerId: State<Long?> = _selectedPlayerId
 
     private var selectionJob: Job? = null
+    private var lastColorIndex = -1
 
     private val playerColors = settingsRepository.getSettingsFlow()
         .map { getColors(it) }
@@ -73,8 +74,20 @@ class PlayViewModel(private val settingsRepository: SettingsRepository) : ViewMo
         // Update touches immediately for better responsiveness
         if (!_touches.containsKey(id)) {
             val colors = playerColors.value
-            val color = colors[(_touches.size) % colors.size]
-            _touches[id] = TouchPoint(id, position, color)
+            if (colors.isNotEmpty()) {
+                val usedColors = _touches.values.map { it.color }.toSet()
+                
+                // Find the first unused color in the sequence (prioritize filling holes)
+                var chosenIndex = colors.indices.firstOrNull { colors[it] !in usedColors }
+                
+                // If all colors are in use, fallback to round-robin duplication
+                if (chosenIndex == null) {
+                    chosenIndex = (lastColorIndex + 1) % colors.size
+                }
+
+                lastColorIndex = chosenIndex
+                _touches[id] = TouchPoint(id, position, colors[chosenIndex])
+            }
         }
         startSelectionProcess()
     }
@@ -90,6 +103,11 @@ class PlayViewModel(private val settingsRepository: SettingsRepository) : ViewMo
         if (_isSelectingPlayer.value || _selectedPlayerId.value != null) return
 
         _touches.remove(id)
+
+        if (_touches.isEmpty()) {
+            lastColorIndex = -1
+        }
+
         if (_touches.size < 2 && _selectedPlayerId.value == null && _countdown.value != null) {
             cancelSelection()
         }
@@ -150,6 +168,7 @@ class PlayViewModel(private val settingsRepository: SettingsRepository) : ViewMo
         cancelSelection()
         _touches.clear()
         _selectedPlayerId.value = null
+        lastColorIndex = -1
     }
 
     override fun onCleared() {

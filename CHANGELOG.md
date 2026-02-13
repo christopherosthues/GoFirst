@@ -4,6 +4,11 @@
 
 ## [Unreleased]
 
+### Fixed
+- Don't select duplicated colors when up to 10 players are playing
+
+## [1.0.0] - 2026-02-11
+
 ### Added
 - Add tooltip text to main screen
 - Add animated splash screen logo
