@@ -87,11 +87,11 @@ fun PlayScreen(
                             val event = awaitPointerEvent()
                             event.changes.forEach { change ->
                                 if (change.changedToDown()) {
-                                    viewModel.onTouchDown(change.id.value, change.position)
+                                    viewModel.onPointerDown(change.id.value, change.position, change.type)
                                 } else if (change.changedToUp() || change.isConsumed) {
-                                    viewModel.onTouchUp(change.id.value)
+                                    viewModel.onPointerUp(change.id.value, change.type)
                                 } else if (change.positionChange() != Offset.Zero) {
-                                    viewModel.onTouchMove(change.id.value, change.position)
+                                    viewModel.onPointerMove(change.id.value, change.position)
                                 }
                             }
                         }

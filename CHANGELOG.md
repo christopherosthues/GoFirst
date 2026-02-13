@@ -6,6 +6,7 @@
 
 ### Fixed
 - Don't select duplicated colors when up to 10 players are playing
+- Add support for mouse events on desktop platforms (Linux, MacOS, Windows)
 
 ## [1.0.0] - 2026-02-11
 
