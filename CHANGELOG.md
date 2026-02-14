@@ -2,7 +2,7 @@
 
 # GoFirst Changelog
 
-## [Unreleased]
+## [1.1.0] - 2026-02-14
 
 ### Fixed
 - Don't select duplicated colors when up to 10 players are playing
